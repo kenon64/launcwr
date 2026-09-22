@@ -1,0 +1,25 @@
+# Зависимости
+node_modules/
+
+# Сборка
+out/
+release/
+dist/
+tests-out/
+
+# Логи и профили
+*.log
+smoke.png
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# ОС
+.DS_Store
+Thumbs.db
+
+# electron-builder
+*.blockmap
+release/

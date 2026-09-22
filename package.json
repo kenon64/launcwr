@@ -1,0 +1,95 @@
+{
+  "name": "wosergame-launcher",
+  "productName": "WOSERGAME Launcher",
+  "version": "1.0.3",
+  "description": "Официальный лаунчер приватного сервера WOSERGAME.NET (WoW 3.3.5a)",
+  "author": "WOSERGAME.NET Team",
+  "license": "MIT",
+  "private": true,
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "build:tests": "tsc -p tsconfig.test.json",
+    "test": "npm run build:tests && node --test tests-out/tests/",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win:lowram": "npm run build && electron-builder --win --dir --config.win.signAndEditExecutable=false && node scripts/make-portable-zip.mjs",
+    "icon": "node scripts/make-ico.mjs"
+  },
+  "dependencies": {
+    "electron-log": "^5.2.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.9",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.0.0",
+    "jimp": "^1.6.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  },
+  "build": {
+    "appId": "net.wosergame.launcher",
+    "productName": "WOSERGAME Launcher",
+    "copyright": "Copyright © 2026 WOSERGAME.NET",
+    "directories": {
+      "output": "release",
+      "buildResources": "packaging"
+    },
+    "files": [
+      "out/**",
+      "!out/**/*.map",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "config",
+        "to": "config"
+      },
+      {
+        "from": "manifests",
+        "to": "manifests"
+      }
+    ],
+    "asarUnpack": [],
+    "win": {
+      "icon": "packaging/icon.ico",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "WOSERGAME-Launcher-${version}-Portable.${ext}",
+      "signAndEditExecutable": false
+    },
+    "linux": {
+      "icon": "resources/icon.png",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Game"
+    },
+    "mac": {
+      "icon": "resources/icon.png",
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.games"
+    },
+    "publish": null
+  }
+}
