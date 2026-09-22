@@ -1,0 +1,8 @@
+{
+  "_comment": "ПРИМЕР манифеста самообновления лаунчера. URL из config/launcher.config.json → launcherUpdate.manifestUrl. sha256 обязателен: установщик не запустится без совпадения хеша.",
+  "version": "1.0.1",
+  "url": "https://cdn.wosergame.net/launcher/WOSERGAME-Launcher-Setup-1.0.1.exe",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "size": 88123456,
+  "notes": "Исправлена проверка целостности на клиентах с ruRU-локалью."
+}

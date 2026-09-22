@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "server": {
+    "name": "WOSERGAME.NET",
+    "tagline": "Легендарный приватный сервер World of Warcraft 3.3.5a",
+    "clientVersion": "3.3.5a",
+    "expectedBuild": 12340,
+    "realmHost": "play.wosergame.net",
+    "realmPort": 3724,
+    "websiteUrl": "https://wosergame.net",
+    "supportUrl": "https://vk.ru/wosergame",
+    "statusUrl": null
+  },
+  "updates": {
+    "enabled": false,
+    "manifestUrl": null,
+    "channel": "stable"
+  },
+  "launcherUpdate": {
+    "enabled": false,
+    "manifestUrl": null
+  },
+  "ui": {
+    "defaultLocale": "ru",
+    "theme": "dark"
+  },
+  "graphics": {
+    "quality": "auto",
+    "particles": "embers"
+  },
+  "launch": {
+    "extraArgs": [],
+    "autoFixRealmlist": true,
+    "elevateIfReadonly": true,
+    "minimizeOnGameStart": true
+  }
+}

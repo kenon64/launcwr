@@ -1,0 +1,22 @@
+{
+  "_comment": "ПРИМЕР manifest.json автообновления клиента. Положите реальный файл по HTTPS-URL из config/launcher.config.json → updates.manifestUrl. Все URL — только HTTPS. Пути — относительные от корня клиента, без '..' и абсолютных.",
+  "version": 1,
+  "baseUrl": "https://cdn.wosergame.net/patch/stable/",
+  "files": [
+    {
+      "path": "Data/common.MPQ",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "size": 123456789
+    },
+    {
+      "path": "Data/ruRU/realmlist.wtf",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+      "size": 64
+    },
+    {
+      "path": "WTF/Config.wtf",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+      "size": 128
+    }
+  ]
+}
