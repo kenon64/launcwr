@@ -1,0 +1,131 @@
+name: Test and build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Typecheck and unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract workspace archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f workspace.tar.gz ]; then
+            echo "workspace.tar.gz not found"
+            exit 1
+          fi
+
+          rm -rf workspace
+          mkdir -p workspace
+          tar -xzf workspace.tar.gz -C workspace
+
+          project_dir="$(find workspace -type f -name package.json -not -path '*/node_modules/*' -print -quit | xargs -r dirname)"
+          if [ -z "$project_dir" ]; then
+            echo "No project package.json found inside extracted workspace"
+            exit 1
+          fi
+
+          echo "PROJECT_DIR=$project_dir" >> "$GITHUB_ENV"
+          echo "Using project directory: $project_dir"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Typecheck
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm run typecheck
+
+      - name: Unit tests
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm test
+
+      - name: Build bundles
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm run build
+
+  package:
+    name: Package (${{ matrix.name }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-latest
+            command: npm run dist:linux
+            artifact: linux-distribution
+          - name: windows
+            os: windows-latest
+            command: npm run dist:win:lowram
+            artifact: windows-portable
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract workspace archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f workspace.tar.gz ]; then
+            echo "workspace.tar.gz not found"
+            exit 1
+          fi
+
+          rm -rf workspace
+          mkdir -p workspace
+          tar -xzf workspace.tar.gz -C workspace
+
+          project_dir="$(find workspace -type f -name package.json -not -path '*/node_modules/*' -print -quit | xargs -r dirname)"
+          if [ -z "$project_dir" ]; then
+            echo "No project package.json found inside extracted workspace"
+            exit 1
+          fi
+
+          echo "PROJECT_DIR=$project_dir" >> "$GITHUB_ENV"
+          echo "Using project directory: $project_dir"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Build distribution
+        working-directory: ${{ env.PROJECT_DIR }}
+        shell: bash
+        run: ${{ matrix.command }}
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ env.PROJECT_DIR }}/release/**
+            ${{ env.PROJECT_DIR }}/out/**
+          if-no-files-found: warn
+          retention-days: 14
